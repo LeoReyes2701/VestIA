@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VestIA - Tu Estilista Personal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">VestIA</a>
+                <button class="btn btn-outline-light" id="boton-carrito">
+                    Carrito (0)
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container-fluid my-4">
+    <div class="row">
+
+        <aside class="col-lg-2 col-md-3 px-3" id="seccion-filtros">
+            <h5 class="border-bottom pb-2">Filtros</h5>
+            
+            <div class="mb-3">
+                <label for="filtro-categoria" class="form-label">Categoría</label>
+                <select class="form-select" id="filtro-categoria">
+                    <option value="">Todas</option>
+                    <option value="womens-dresses">Vestidos</option>
+                    <option value="womens-shoes">Zapatos</option>
+                    <option value="mens-shirts">Camisas Hombre</option>
+                    <option value="fragrances">Perfumes</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="filtro-precio" class="form-label">Precio Máximo</label>
+                <input type="range" class="form-range" min="0" max="500" id="filtro-precio">
+                <div class="d-flex justify-content-between">
+                    <span>$0</span>
+                    <span id="texto-precio-maximo">$500</span>
+                </div>
+            </div>
+
+            <button class="btn btn-dark w-100" id="boton-limpiar-filtros">Limpiar Filtros</button>
+        </aside>
+
+        <section class="col-lg-7 col-md-9 px-4">
+            <div id="contenedor-productos" class="row g-4">
+            </div>
+            
+            <nav class="d-flex justify-content-center mt-5">
+                <ul class="pagination" id="paginacion-lista"></ul>
+            </nav>
+        </section>
+
+        <aside class="col-lg-3 col-md-4 d-flex flex-column bg-white border-start" id="columna-asistente" style="position: fixed; right: 0; top: 0; height: 100vh; z-index: 1030;">
+            <div class="p-4 border-bottom bg-light">
+            <h5 class="mb-0">Tu Estilista IA</h5>
+            <small class="text-muted">Personal Shopper 24/7</small>
+            </div>
+
+            <div id="cuerpo-chat" class="flex-grow-1 p-3" style="overflow-y: auto; background-color: #fcfcfc;">
+            </div>
+
+            <div class="p-3 border-top bg-white">
+                <div id="previsualizacion-imagen" class="mb-2" style="display: none;">
+                    <span class="badge rounded-pill bg-success">Imagen lista 📸</span>
+                </div>
+                <div class="input-group">
+                    <label class="btn btn-outline-secondary" for="adjuntar-foto">
+                    +
+                    <input type="file" id="adjuntar-foto" accept="image/*" style="display: none;">
+                    </label>
+                    <input type="text" id="entrada-chat" class="form-control" placeholder="Pregunta algo...">
+                    <button class="btn btn-primary" id="boton-enviar">Enviar</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+</main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="js/config.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
