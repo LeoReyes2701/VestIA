@@ -4,7 +4,7 @@ export let listaGlobalProductos = [];
 
 let productosVista = [];     
 let paginaActual = 1;
-const productosPorPagina = 20;
+const productosPorPagina = 18;
 
 let modoFiltrado = false;   
 

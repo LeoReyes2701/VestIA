@@ -31,9 +31,9 @@
   </div>
 </div>
 
-<body>
+<body style="padding-top: 50px;">
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" style="z-index: 1050;">
             <div class="container">
                 <a class="navbar-brand" href="#">VestIA</a>
                 <button class="btn btn-outline-light" id="boton-carrito">
@@ -50,8 +50,6 @@
             <h5 class="border-bottom pb-2">Filtros</h5>
             
             <div class="mb-3">
-                <label for="filtro-categoria" class="form-label">Categoría</label>
-                <div class="mb-3">
                 <label for="filtro-categoria" class="form-label">Categoría</label>
                 <select class="form-select" id="filtro-categoria">
                     <option value="">Todas</option>
@@ -71,8 +69,6 @@
                 </select>
             </div>
 
-            </div>
-
             <div class="mb-3">
                 <label for="filtro-precio" class="form-label">Precio Máximo</label>
                 <input type="text" id="filtro-precio" class="form-control" placeholder="Ej: 50">
@@ -82,7 +78,7 @@
             <button class="btn btn-dark w-100" id="boton-limpiar-filtros">Limpiar Filtros</button>
         </aside>
 
-        <section class="col-lg-7 col-md-9 px-4">
+        <section class="col-lg-7 col-md-9 px-4"  style="top: auto;">
             <div id="contenedor-productos" class="row g-4">
             </div>
             
@@ -91,7 +87,7 @@
             </nav>
         </section>
 
-        <aside class="col-lg-3 col-md-4 d-flex flex-column bg-white border-start" id="columna-asistente" style="position: fixed; right: 0; top: 0; height: 100vh; z-index: 1030;">
+        <aside class="col-lg-3 col-md-4 d-flex flex-column bg-white border-start" id="columna-asistente" style="position: fixed; right: 0; top: 70px; bottom: 0; z-index: 1030;">
             <div class="p-4 border-bottom bg-light">
             <h5 class="mb-0">Tu Estilista IA</h5>
             <small class="text-muted">Personal Shopper 24/7</small>
@@ -125,6 +121,10 @@
     <script type="module" src="js/filters.js"></script>
     <script type="module" src="js/cart.js"></script>
     <script type="module" src="js/chatbot.js"></script>
+    <script type="module" src="js/profile.js"></script>
+    
+</body>
+</html>ript type="module" src="js/chatbot.js"></script>
     
 </body>
 </html>

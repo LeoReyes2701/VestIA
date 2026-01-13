@@ -1,4 +1,3 @@
-// filters.js
 import {
   listaGlobalProductos,
   setProductosVista,
