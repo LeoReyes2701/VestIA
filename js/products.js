@@ -1,9 +1,11 @@
 let listaGlobalProductos = [];
+let listaFiltrada = [];
 let paginaActual = 1;
 const productosPorPagina = 20;
 
 async function cargarProductos() {
     try {
+        document.getElementById('contenedor-productos').innerHTML = '<div class="col-12 text-center py-5">Cargando productos...</div>'; //Chequear
         const respuesta = await fetch('https://dummyjson.com/products?limit=0');
         const datos = await respuesta.json();
 
@@ -27,6 +29,8 @@ async function cargarProductos() {
             categoriasPermitidas.includes(producto.category)
         );
 
+        listaFiltrada = [...listaGlobalProductos]; //Aqui se crea la nueva lista
+
         cambiarPagina(1);
         
     } catch (error) {
@@ -35,8 +39,8 @@ async function cargarProductos() {
 }
 
 function cambiarPagina(pagina) {
-    const totalPaginas = Math.ceil(listaGlobalProductos.length / productosPorPagina);
-    
+    const totalPaginas = Math.ceil(listaFiltrada.length / productosPorPagina);//Cambie de la lista global a la lista filtrada
+
     if (pagina < 1) pagina = 1;
     if (pagina > totalPaginas) pagina = totalPaginas;
 
@@ -45,7 +49,7 @@ function cambiarPagina(pagina) {
     const inicio = (paginaActual - 1) * productosPorPagina;
     const fin = inicio + productosPorPagina;
     
-    const productosPagina = listaGlobalProductos.slice(inicio, fin);
+    const productosPagina = listaFiltrada.slice(inicio, fin); //Cambie de la lista global a la lista filtrada
 
     mostrarProductos(productosPagina);
     renderizarBotonesPaginacion(totalPaginas);
@@ -83,6 +87,8 @@ function mostrarProductos(listaDeProductos) {
 function renderizarBotonesPaginacion(totalPaginas) {
     const contenedorPaginacion = document.getElementById('paginacion-lista');
     contenedorPaginacion.innerHTML = '';
+
+    if (totalPaginas <= 1) return; //añadi esto para que cuando no hayan elementos no se vea lo de anterior y siguiente
 
     const claseAnterior = paginaActual === 1 ? 'disabled' : '';
     let htmlBotones = `
