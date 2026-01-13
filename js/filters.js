@@ -1,34 +1,54 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const selectCategoria = document.getElementById('filtro-categoria');
-    const inputPrecio = document.getElementById('filtro-precio');
-    const spanPrecioMaximo = document.getElementById('texto-precio-maximo');
-    const btnLimpiar = document.getElementById('boton-limpiar-filtros');
+import {
+  listaGlobalProductos,
+  setProductosVista,
+  resetProductosVista
+} from "./products.js";
 
-    inputPrecio.addEventListener('input', (e) => {
-        spanPrecioMaximo.textContent = `$${e.target.value}`;
-    }); //Actualiza el precio (500) de los filtros al deslizar
+export function initFilters() {
+  const selectCategoria = document.getElementById("filtro-categoria");
+  const inputPrecio = document.getElementById("filtro-precio");
+  const btnLimpiar = document.getElementById("boton-limpiar-filtros");
 
-    function aplicarFiltros() {
-        const categoriaSeleccionada = selectCategoria.value;
-        const precioMaximo = parseFloat(inputPrecio.value);
+  if (!selectCategoria || !inputPrecio) return;
 
-        listaFiltrada = listaGlobalProductos.filter(producto => {
-            const coincideCategoria = categoriaSeleccionada === "" || producto.category === categoriaSeleccionada;
-            const coincidePrecio = producto.price <= precioMaximo;
-            return coincideCategoria && coincidePrecio;
-        });
+  selectCategoria.addEventListener("change", aplicarFiltros);
+  inputPrecio.addEventListener("input", aplicarFiltros);
 
-        cambiarPagina(1);
+  btnLimpiar?.addEventListener("click", () => {
+    selectCategoria.value = "";
+    inputPrecio.value = "";
+    localStorage.removeItem("filtro-precio");
+    resetProductosVista();
+  });
+
+  // restaurar precio guardado (si existe)
+  const guardado = localStorage.getItem("filtro-precio");
+  if (guardado !== null && guardado !== "" && Number.isFinite(Number(guardado))) {
+    inputPrecio.value = guardado;
+  }
+
+  aplicarFiltros();
+
+  function aplicarFiltros() {
+    const categoria = selectCategoria.value;     // "" => todas
+    const precioMax = parseFloat(inputPrecio.value);
+    const precioValido = Number.isFinite(precioMax) ? precioMax : Infinity;
+
+    if (precioValido === Infinity) localStorage.removeItem("filtro-precio");
+    else localStorage.setItem("filtro-precio", String(precioValido));
+
+    let result = listaGlobalProductos;
+
+    if (categoria) {
+      result = result.filter(p => p.category === categoria);
     }
 
-    selectCategoria.addEventListener('change', aplicarFiltros);
-    inputPrecio.addEventListener('change', aplicarFiltros);
+    result = result.filter(p => p.price <= precioValido);
 
-    btnLimpiar.addEventListener('click', () => {
-        selectCategoria.value = "";
-        inputPrecio.value = 500;
-        spanPrecioMaximo.textContent = "$500";
+    const sinCategoria = !categoria;
+    const sinPrecio = precioValido === Infinity;
 
-        aplicarFiltros();
-    });
-});
+    if (sinCategoria && sinPrecio) resetProductosVista();
+    else setProductosVista(result);
+  }
+}
