@@ -1,10 +1,6 @@
-// js/profile.js
-
 export function initProfile() {
-    // 1. Cargar datos al abrir la página
     cargarPreferencias();
     
-    // 2. Escuchar el clic en el botón guardar
     const btnGuardar = document.getElementById("btn-guardar-perfil");
     if (btnGuardar) {
         btnGuardar.addEventListener("click", guardarPreferencias);
@@ -12,13 +8,11 @@ export function initProfile() {
 }
 
 function guardarPreferencias() {
-    // A. Capturar los valores del formulario
     const nombre = document.getElementById("perfil-nombre").value;
     const talla = document.getElementById("perfil-talla").value;
     const estilo = document.getElementById("perfil-estilo").value;
     const color = document.getElementById("perfil-color").value;
 
-    // Validación simple: Si todo está vacío, no guardar nada
     if (!nombre && !talla && !estilo && !color) {
         alert("Por favor, llena al menos un dato para que VestIA te conozca.");
         return;
@@ -26,26 +20,21 @@ function guardarPreferencias() {
 
     const perfil = { nombre, talla, estilo, color };
 
-    // B. Guardar en el navegador (LocalStorage)
     try {
         localStorage.setItem("vestia_perfil", JSON.stringify(perfil));
-        console.log("Datos guardados:", perfil); // Para depurar en consola
+        console.log("Datos guardados:", perfil);
     } catch (e) {
         console.error("Error guardando en localStorage", e);
         alert("Hubo un error guardando tus datos.");
         return;
     }
-    
-    // C. Feedback al usuario
+
     alert("¡Gustos guardados! Ahora VestIA personalizará sus respuestas para ti.");
     
-    // D. CERRAR EL MODAL (Truco infalible)
-    // Buscamos el botón de cerrar (la X) dentro del modal y le hacemos clic automáticamente
     const botonCerrar = document.querySelector('#modalPerfil .btn-close');
     if (botonCerrar) {
         botonCerrar.click();
     } else {
-        // Plan B: Si no encuentra la X, forzamos remover la clase y el fondo oscuro
         const modal = document.getElementById('modalPerfil');
         modal.classList.remove('show');
         modal.style.display = 'none';
@@ -70,7 +59,6 @@ function cargarPreferencias() {
     }
 }
 
-// Esta función la usa el CHATBOT para leer los datos cada vez que hablas
 export function getResumenPerfil() {
     const guardado = localStorage.getItem("vestia_perfil");
     
@@ -79,7 +67,6 @@ export function getResumenPerfil() {
     }
 
     const p = JSON.parse(guardado);
-    // Construimos un texto claro para que la IA lo entienda
     return `PERFIL DEL CLIENTE:
     - Nombre: ${p.nombre || "No especificado"}
     - Talla de ropa: ${p.talla || "No especificada"}

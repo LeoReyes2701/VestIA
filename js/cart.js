@@ -49,7 +49,6 @@ export function setQty(productId, qty) {
   if (!found) return;
 
   if (!Number.isFinite(q) || q <= 0) {
-    // qty 0 => eliminar
     guardarCarrito(items.filter((x) => x.id !== id));
   } else {
     found.qty = Math.floor(q);

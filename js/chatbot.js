@@ -2,19 +2,15 @@ import { API_KEY, API_URL } from "./config.js";
 import { listaGlobalProductos, setProductosVista } from "./products.js";
 import { getResumenPerfil } from "./profile.js";
 
-// --- REFERENCIAS AL DOM (UI) ---
 const chatBody = document.getElementById("cuerpo-chat");
 const inputChat = document.getElementById("entrada-chat");
 const btnEnviar = document.getElementById("boton-enviar");
 const inputFoto = document.getElementById("adjuntar-foto");
 const previewZona = document.getElementById("previsualizacion-imagen");
 
-// --- ESTADO Y MEMORIA ---
 let imagenBase64 = null; 
-// Ahora el historial guardará objetos con el formato exacto de Gemini: { role: "user/model", parts: [...] }
 let historialChat = [];  
 
-// --- INICIALIZACIÓN ---
 export function initChatbot() {
     if (!btnEnviar) return;
 
@@ -25,8 +21,7 @@ export function initChatbot() {
     });
 
     inputFoto.addEventListener("change", procesarImagen);
-    
-    // Mensaje de bienvenida (sin guardarlo en historial API para no ensuciar)
+
     setTimeout(() => {
         if (chatBody.children.length === 0) {
             agregarMensajeIA("¡Hola! Soy VestIA 👗. ¿Buscas un outfit específico o necesitas ayuda combinando algo?");
@@ -34,17 +29,14 @@ export function initChatbot() {
     }, 500);
 }
 
-// --- LÓGICA PRINCIPAL ---
 async function enviarMensaje() {
     const texto = inputChat.value.trim();
     if (!texto && !imagenBase64) return;
 
-    // 1. Mostrar visualmente
     agregarMensajeUsuario(texto, imagenBase64); 
     
-    // Guardamos referencia local para la llamada
     const imagenParaEnviar = imagenBase64; 
-    const textoParaEnviar = texto; // Guardamos el texto
+    const textoParaEnviar = texto;
 
     inputChat.value = "";
     limpiarImagenPrevia();
@@ -52,20 +44,16 @@ async function enviarMensaje() {
     const loadingId = agregarLoading();
 
     try {
-        // 2. Llamar a Gemini enviando TODO el contexto
         const respuestaIA = await llamarAGemini(textoParaEnviar, imagenParaEnviar);
         
         removerLoading(loadingId);
         procesarRespuestaIA(respuestaIA);
 
-        // 3. ACTUALIZAR MEMORIA (AQUÍ ESTABA EL FALLO ANTES)
-        // Guardamos lo que dijo el usuario (solo texto para ahorrar memoria)
         historialChat.push({ 
             role: "user", 
             parts: [{ text: textoParaEnviar }] 
         });
 
-        // Guardamos lo que respondió la IA
         historialChat.push({ 
             role: "model", 
             parts: [{ text: respuestaIA }] 
@@ -80,13 +68,11 @@ async function enviarMensaje() {
     imagenBase64 = null;
 }
 
-// --- CONEXIÓN CON LA API (CORREGIDA PARA TENER MEMORIA) ---
 async function llamarAGemini(mensajeUsuario, imagenData) {
     if (!API_KEY || API_KEY.includes("TU_CLAVE")) {
         return "⚠️ Error: Falta configurar la API Key en js/config.js";
     }
 
-    // 1. Contexto del Catálogo (System Prompt)
     const inventario = listaGlobalProductos.map(p => 
         `- ID:${p.id} | ${p.title} | $${p.price} | Cat:${p.category}`
     ).join("\n");
@@ -109,11 +95,8 @@ async function llamarAGemini(mensajeUsuario, imagenData) {
     4. Sé amable y usa el nombre del usuario si lo sabes.
     `;
 
-    // 2. Construir la "Cadena de Conversación" (Payload)
-    // El truco es enviar: [Instrucciones] + [Historial Pasado] + [Mensaje Nuevo]
     let contenidos = [];
 
-    // A. Instrucción inicial (Simulamos que es el primer mensaje de usuario para dar contexto)
     contenidos.push({ 
         role: "user", 
         parts: [{ text: instruccionesSistema }] 
@@ -124,11 +107,8 @@ async function llamarAGemini(mensajeUsuario, imagenData) {
         parts: [{ text: "Entendido, soy VestIA y conozco el inventario. ¿En qué te ayudo?" }] 
     });
 
-    // B. Añadir todo el historial previo (Lo que habéis hablado antes)
-    // Usamos .slice(-10) para recordar solo los últimos 10 mensajes y no saturar
     contenidos = contenidos.concat(historialChat.slice(-10));
 
-    // C. Añadir el mensaje ACTUAL (con imagen si hay)
     const partesNuevoMensaje = [];
     
     if (imagenData) {
@@ -147,7 +127,6 @@ async function llamarAGemini(mensajeUsuario, imagenData) {
         parts: partesNuevoMensaje 
     });
 
-    // 3. Enviar todo a Google
     const response = await fetch(`${API_URL}?key=${API_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -163,9 +142,7 @@ async function llamarAGemini(mensajeUsuario, imagenData) {
     return data.candidates[0].content.parts[0].text;
 }
 
-// --- PROCESAMIENTO DE RESPUESTA ---
 function procesarRespuestaIA(textoCompleto) {
-    // Detectar filtro
     const match = textoCompleto.match(/FILTER_CMD:\[(.*?)\]/);
     let textoFinal = textoCompleto;
     let idsProductos = [];
@@ -183,7 +160,6 @@ function procesarRespuestaIA(textoCompleto) {
     }
 }
 
-// --- FUNCIONES VISUALES (UI) - SIN CAMBIOS ---
 function agregarMensajeUsuario(texto, imgData) {
     const div = document.createElement("div");
     div.className = "d-flex flex-column align-items-end mb-3 animate__animated animate__fadeInRight";

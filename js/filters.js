@@ -30,7 +30,7 @@ export function initFilters() {
   aplicarFiltros();
 
   function aplicarFiltros() {
-    const categoria = selectCategoria.value;     // "" => todas
+    const categoria = selectCategoria.value;
     const precioMax = parseFloat(inputPrecio.value);
     const precioValido = Number.isFinite(precioMax) ? precioMax : Infinity;
 
