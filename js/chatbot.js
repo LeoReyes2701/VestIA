@@ -1,5 +1,6 @@
 import { API_KEY, API_URL } from "./config.js";
 import { listaGlobalProductos, setProductosVista } from "./products.js";
+import { getResumenPerfil } from "./profile.js";
 
 // --- REFERENCIAS AL DOM (UI) ---
 const chatBody = document.getElementById("cuerpo-chat");
@@ -90,16 +91,22 @@ async function llamarAGemini(mensajeUsuario, imagenData) {
         `- ID:${p.id} | ${p.title} | $${p.price} | Cat:${p.category}`
     ).join("\n");
 
+    const datosUsuario = getResumenPerfil(); 
+
     const instruccionesSistema = `
-    Eres "VestIA", asesora de moda.
-    INVENTARIO:
+    Eres "VestIA", asesora de moda personal.
+
+    CONTEXTO DEL USUARIO:
+    ${datosUsuario}
+
+    INVENTARIO DISPONIBLE:
     ${inventario}
 
     REGLAS:
-    1. Recomienda productos del inventario.
+    1. Recomienda productos del inventario basándote en los gustos del usuario (si los hay).
     2. Si recomiendas, termina con: FILTER_CMD:[id1, id2]
-    3. Si el usuario sube foto, analízala.
-    4. MANTÉN EL CONTEXTO de la conversación.
+    3. MANTÉN EL CONTEXTO de la conversación.
+    4. Sé amable y usa el nombre del usuario si lo sabes.
     `;
 
     // 2. Construir la "Cadena de Conversación" (Payload)
